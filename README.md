@@ -13,7 +13,7 @@
 
 ### 以油猴脚本形式使用
 
-[打包](#打包)成功后或到[Releases](./releases)下载构建好的脚本文件，将 `doubao-downloader.user.js` 添加到油猴扩展中使用。
+[打包](#打包)成功后或到[Releases](https://github.com/LauZzL/doubao-downloader/releases)下载构建好的脚本文件，将 `doubao-downloader.user.js` 添加到油猴扩展中使用。
 
 ### 以浏览器扩展形式使用
 
@@ -23,7 +23,7 @@
 
 ![KOLlEle.png](https://iili.io/KOLlEle.png)
 
-- 或[Releases](./releases)下载 `.crx` 或 `.zip` 文件， `.crx` 文件可直接拖入浏览器中安装，`.zip` 文件需要解压后导入。
+- 或[Releases](https://github.com/LauZzL/doubao-downloader/releases)下载 `.crx` 或 `.zip` 文件， `.crx` 文件可直接拖入浏览器中安装，`.zip` 文件需要解压后导入。
 
 ## 预览
 
@@ -53,8 +53,8 @@
 
 加入该项目同开发者共同维护。
 
-- 你可以通过 [PR](./pulls) 对项目代码做出贡献
-- 你可以通过 [Issues](./issues) 提交问题或提出建议
+- 你可以通过 [PR](https://github.com/LauZzL/doubao-downloader/pulls) 对项目代码做出贡献
+- 你可以通过 [Issues](https://github.com/LauZzL/doubao-downloader/issues) 提交问题或提出建议
 
 ### 本地开发(基于油猴)
 
