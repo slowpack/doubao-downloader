@@ -14,13 +14,15 @@ export function useCreation(callback: (urls: string[]) => void) {
       let creations = findAllKeysInJson(jsonData, "creations") as Creation[][];
       if (creations.length > 0) {
         const images: string[] = [];
-        creations.forEach((creaetion) => {
-          creaetion.map((item) => {
-            const rawUrl = item.image.image_ori_raw.url;
-            item.image.image_ori.url = rawUrl;
-            item.image.image_preview.url = rawUrl;
-            item.image.image_thumb.url = rawUrl;
-            !images.includes(rawUrl) && images.push(rawUrl);
+        creations.forEach((creation) => {
+          creation.map((item) => {
+            const rawUrl = item?.image?.image_ori_raw?.url;
+            if (rawUrl) {
+              item.image.image_ori && (item.image.image_ori.url = rawUrl);
+              item.image.image_preview && (item.image.image_preview.url = rawUrl);
+              item.image.image_thumb && (item.image.image_thumb.url = rawUrl);
+              !images.includes(rawUrl) && images.push(rawUrl);
+            }
             return item;
           });
         });
