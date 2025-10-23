@@ -4,7 +4,7 @@
 
 **基于 React 开发的豆包AI无水印资源批量下载浏览器扩展/油猴脚本。**
 
-![KOLd7Hv.gif](https://iili.io/KOLd7Hv.gif)
+![KOLd7Hv.gif](https://iili.io/KgJifef.gif)
 
 
 ## 开始使用
@@ -29,7 +29,7 @@
 
 #### 发现新图片
 
-![KOLd7Hv.gif](https://iili.io/KOLd7Hv.gif)
+![KOLd7Hv.gif](https://iili.io/KgJifef.gif)
 
 #### 对话实时获取
 
