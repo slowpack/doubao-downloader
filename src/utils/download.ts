@@ -3,12 +3,7 @@ import { saveAs } from 'file-saver';
 
 const downloadImage = async (url: string): Promise<Blob> => {
   try {
-    const timestamp = new Date().getTime();
-    const requestUrl = url.includes('?') 
-      ? `${url}&timestamp=${timestamp}` 
-      : `${url}?timestamp=${timestamp}`;
-
-    const response = await fetch(requestUrl, {
+    const response = await fetch(url, {
       method: 'GET',
       mode: 'cors',
       cache: 'no-store'
@@ -28,26 +23,17 @@ const downloadImage = async (url: string): Promise<Blob> => {
 
 
 const getFileNameFromUrl = (url: string): string => {
+  // url template ../rc_gen_image/*********.jpeg~tplv-****-image_raw.png?rcl=....
   try {
     const urlObj = new URL(url);
     const pathname = urlObj.pathname;
     const fileName = pathname.split('/').pop() || 'image';
-    return fileName.split('.').slice(0, -1).join('.') || fileName;
+    return fileName
   } catch {
     return `image_${Date.now()}`;
   }
 };
 
-
-const getImageExtension = (blob: Blob): string => {
-  const type = blob.type;
-  if (type.includes('jpeg')) return 'jpg';
-  if (type.includes('png')) return 'png';
-  if (type.includes('gif')) return 'gif';
-  if (type.includes('webp')) return 'webp';
-  if (type.includes('svg')) return 'svg';
-  return 'jpg';
-};
 
 interface DownloadOptions {
   zipName?: string;
@@ -56,7 +42,7 @@ interface DownloadOptions {
 }
 
 /**
- * 下载图片列表并打包为ZIP
+ * 下载图片列表并打包为ZIP，如果是单个图片，则直接下载
  * @param imageUrls 图片URL数组
  * @param options 下载配置
  */
@@ -72,6 +58,20 @@ const downloadImagesAsZip = async (
 
   if (!imageUrls.length) {
     console.warn('没有需要下载的图片');
+    return;
+  }
+
+  // 单张图片直接下载
+  if (imageUrls.length === 1) {
+    try {
+      const url = imageUrls[0];
+      const blob = await downloadImage(url);
+      const fileName = getFileNameFromUrl(url);
+      saveAs(blob, fileName);
+      onProgress(1, 1);
+    } catch (error) {
+      onError(imageUrls[0], error as Error);
+    }
     return;
   }
 
@@ -91,9 +91,7 @@ const downloadImagesAsZip = async (
       const promises = chunk.map(async (url) => {
         try {
           const blob = await downloadImage(url);
-          const baseName = getFileNameFromUrl(url);
-          const extension = getImageExtension(blob);
-          const fileName = `${baseName}.${extension}`;
+          const fileName = getFileNameFromUrl(url);
         
           zip.file(fileName, blob);
           
