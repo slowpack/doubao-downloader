@@ -36,6 +36,10 @@ export function useCreation(callback: (urls: string[]) => void) {
       }
       return jsonData;
     };
-    JSON.parse.toString() !== 'function Function() { [native code] }' && toast.success("💥 HOOK成功!");
+    if (JSON.parse.toString() === 'function Function() { [native code] }') {
+      toast.error("💥 HOOK失败! ");
+    } else {
+      toast.success("💥 HOOK成功!");
+    }
   }, []);
 }
