@@ -40,6 +40,11 @@ export const Home = (props: HomeProps) => {
     setSelectedUrls(undownloaded);
   };
 
+  // 取消所有勾选
+  const unselectAll = () => {
+    setSelectedUrls([]);
+  };
+
   // 统计未下载的图片数量
   const undownloadedCount = props.urls.filter(
     (url) => !props.downloadedImages.has(url)
@@ -67,7 +72,7 @@ export const Home = (props: HomeProps) => {
                 className="dd-btn primary"
                 disabled={props.isDownloading}
               >
-                {props.isDownloading ? "下载中..." : "下载所有"}
+                {props.isDownloading ? "下载中..." : `下载所有 (${props.urls.length})`}
               </button>
               <button
                 onClick={downloadSelected}
@@ -86,6 +91,18 @@ export const Home = (props: HomeProps) => {
                 }}
               >
                 勾选未下载 ({undownloadedCount})
+              </button>
+              <button
+                onClick={unselectAll}
+                className="dd-btn"
+                disabled={selectedUrls.length === 0}
+                style={{
+                  backgroundColor: selectedUrls.length > 0 ? "#f59e0b" : "#9ca3af",
+                  color: "white",
+                }}
+                title="清除所有勾选"
+              >
+                取消勾选 ({selectedUrls.length})
               </button>
               <button
                 onClick={handleResetDownloaded}

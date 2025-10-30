@@ -1,5 +1,6 @@
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState, useEffect, memo, useCallback } from "react";
+import React, { useState, useEffect, memo, useCallback, useMemo } from "react";
+import { VirtuosoGrid } from "react-virtuoso";
 
 // 单个图片项组件，使用 memo 优化性能
 const ImageItem = memo(({
@@ -110,29 +111,53 @@ export const ImageSelector = ({
     });
   }, [onSelectChange]);
 
-  const getColumnClasses = () => {
-    const cols = useIsMobile() ? columns.mobile : columns.desktop;
-    return `grid-cols-${cols}`;
-  };
+  const isMobile = useIsMobile();
+  const cols = isMobile ? columns.mobile : columns.desktop;
+
+  // 使用 useMemo 缓存 itemContent 函数
+  const itemContent = useCallback((index: number) => {
+    const image = images[index];
+    const isDownloaded = downloadedImages.has(image);
+    const isSelected = selectedIds.includes(image);
+
+    return (
+      <ImageItem
+        key={image}
+        image={image}
+        isDownloaded={isDownloaded}
+        isSelected={isSelected}
+        onToggle={toggleSelection}
+      />
+    );
+  }, [images, downloadedImages, selectedIds, toggleSelection]);
+
+  // 自定义组件样式
+  const gridComponents = useMemo(() => ({
+    List: React.forwardRef<HTMLDivElement>((props: any, ref) => (
+      <div
+        ref={ref}
+        {...props}
+        className="grid gap-4"
+        style={{
+          ...props.style,
+          gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+        }}
+      />
+    )),
+    Item: (props: any) => (
+      <div {...props} style={{ ...props.style }} />
+    ),
+  }), [cols]);
 
   return (
-    <div className="w-full px-4 py-6">
-      <div className={`grid gap-4 ${getColumnClasses()}`}>
-        {images.map((image) => {
-          const isDownloaded = downloadedImages.has(image);
-          const isSelected = selectedIds.includes(image);
-
-          return (
-            <ImageItem
-              key={image}
-              image={image}
-              isDownloaded={isDownloaded}
-              isSelected={isSelected}
-              onToggle={toggleSelection}
-            />
-          );
-        })}
-      </div>
+    <div className="w-full h-full px-4 py-6">
+      <VirtuosoGrid
+        style={{ height: '100%' }}
+        totalCount={images.length}
+        components={gridComponents}
+        itemContent={itemContent}
+        overscan={200}
+      />
     </div>
   );
 };
