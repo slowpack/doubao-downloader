@@ -58,7 +58,7 @@ export const Home = (props: HomeProps) => {
         onClick={props.onClose}
         className="dd-mask absolute opacity-50 top-0 h-full w-full inset-0 bg-black z-[88888]"
       />
-      <div className="dd-home-content w-[80vw] h-[70vh] lg:w-[800px] lg:h-[600px] overflow-auto">
+      <div className="dd-home-content w-[80vw] h-[70vh] lg:w-[800px] lg:h-[600px]">
         <div className="dd-action-btns">
           <div className="flex items-center gap-2 flex-wrap">
             <div className="flex gap-2">
@@ -102,12 +102,14 @@ export const Home = (props: HomeProps) => {
             </div>
           </div>
         </div>
-        <ImageSelector
-          images={props.urls}
-          downloadedImages={props.downloadedImages}
-          selectedUrls={selectedUrls}
-          onSelectChange={handleOnSelectChange}
-        />
+        <div className="dd-images-container">
+          <ImageSelector
+            images={props.urls}
+            downloadedImages={props.downloadedImages}
+            selectedUrls={selectedUrls}
+            onSelectChange={handleOnSelectChange}
+          />
+        </div>
       </div>
     </div>
   );
