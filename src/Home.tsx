@@ -1,40 +1,111 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { ImageSelector } from "./components/ImageSelector";
 
+interface HomeProps {
+  urls: string[];
+  downloadedImages: Set<string>;
+  isOpen: boolean;
+  onClose: () => void;
+  onDownload: (urls: string[]) => void;
+  isDownloading: boolean;
+  onResetDownloaded: () => void;
+}
 
-export const Home = (props: { urls: string[]; isOpen: boolean, onClose: () => void, onDownload: (urls: string[]) => void }) => {
+export const Home = (props: HomeProps) => {
   const [selectedUrls, setSelectedUrls] = useState<string[]>([]);
 
-  const handleOnSelectChange = (selected: string[]) => {
+  const handleOnSelectChange = useCallback((selected: string[]) => {
     setSelectedUrls(selected);
-  };
+  }, []);
 
   const downloadSelected = async () => {
-    await props.onDownload(selectedUrls)
-  }
+    if (props.isDownloading) return;
+    await props.onDownload(selectedUrls);
+    // 下载完成后清除勾选
+    setSelectedUrls([]);
+  };
 
   const downloadAll = async () => {
-    await props.onDownload(props.urls)
-  }
+    if (props.isDownloading) return;
+    await props.onDownload(props.urls);
+    // 下载完成后清除勾选
+    setSelectedUrls([]);
+  };
 
-  
+  // 勾选所有未下载的图片
+  const selectUndownloaded = () => {
+    const undownloaded = props.urls.filter(
+      (url) => !props.downloadedImages.has(url)
+    );
+    setSelectedUrls(undownloaded);
+  };
+
+  // 统计未下载的图片数量
+  const undownloadedCount = props.urls.filter(
+    (url) => !props.downloadedImages.has(url)
+  ).length;
+
+  // 重置下载记录
+  const handleResetDownloaded = () => {
+    if (window.confirm('确定要清除所有下载记录吗？此操作不可恢复。')) {
+      props.onResetDownloaded();
+    }
+  };
 
   return (
     <div className={`dd-home ${props.isOpen ? "show" : ""}`}>
-      <div onClick={props.onClose} className="dd-mask absolute opacity-50 top-0 h-full w-full inset-0 bg-black z-[88888]" />
+      <div
+        onClick={props.onClose}
+        className="dd-mask absolute opacity-50 top-0 h-full w-full inset-0 bg-black z-[88888]"
+      />
       <div className="dd-home-content w-[80vw] h-[70vh] lg:w-[800px] lg:h-[600px] overflow-auto">
         <div className="dd-action-btns">
-          <div className="flex items-center gap-2">
-            <div>
-              <button onClick={downloadAll} className="dd-btn primary">下载所有</button>
-              <button onClick={downloadSelected} className="dd-btn orange" disabled={selectedUrls.length === 0}>
-                下载选中
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex gap-2">
+              <button
+                onClick={downloadAll}
+                className="dd-btn primary"
+                disabled={props.isDownloading}
+              >
+                {props.isDownloading ? "下载中..." : "下载所有"}
+              </button>
+              <button
+                onClick={downloadSelected}
+                className="dd-btn orange"
+                disabled={selectedUrls.length === 0 || props.isDownloading}
+              >
+                下载选中 ({selectedUrls.length})
+              </button>
+              <button
+                onClick={selectUndownloaded}
+                className="dd-btn"
+                disabled={undownloadedCount === 0}
+                style={{
+                  backgroundColor: undownloadedCount > 0 ? "#10b981" : "#9ca3af",
+                  color: "white",
+                }}
+              >
+                勾选未下载 ({undownloadedCount})
+              </button>
+              <button
+                onClick={handleResetDownloaded}
+                className="dd-btn"
+                disabled={props.downloadedImages.size === 0}
+                style={{
+                  backgroundColor: props.downloadedImages.size > 0 ? "#ef4444" : "#9ca3af",
+                  color: "white",
+                }}
+                title="清除所有下载记录"
+              >
+                重置记录
               </button>
             </div>
           </div>
         </div>
         <ImageSelector
           images={props.urls}
+          downloadedImages={props.downloadedImages}
+          selectedUrls={selectedUrls}
           onSelectChange={handleOnSelectChange}
         />
       </div>
