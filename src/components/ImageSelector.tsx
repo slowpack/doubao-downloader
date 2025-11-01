@@ -28,22 +28,8 @@ const ImageItem = memo(({
 
         {/* 已下载标记 */}
         {isDownloaded && (
-          <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium shadow-md flex items-center gap-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-3 w-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            已下载
+          <div className="absolute w-fit top-2 right-2 bg-green-500 px-2 py-1 rounded-full text-xs font-medium shadow-md text-center gap-1">
+            <span className="text-white p-3">已下载</span >
           </div>
         )}
 

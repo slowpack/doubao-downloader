@@ -65,7 +65,7 @@ export const Home = (props: HomeProps) => {
       />
       <div className="dd-home-content w-[80vw] h-[70vh] lg:w-[800px] lg:h-[600px]">
         <div className="dd-action-btns">
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap overflow-x-auto">
             <div className="flex gap-2">
               <button
                 onClick={downloadAll}

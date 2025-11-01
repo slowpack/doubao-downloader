@@ -7,14 +7,19 @@ import { toast } from "sonner";
 import downloadImagesAsZip from "./utils/download";
 import { DownloadProgress } from "./components/DownloadProgress";
 
-const DOWNLOADED_IMAGES_KEY = 'doubao-downloaded-images';
+const DOWNLOADED_IMAGES_KEY = "doubao-downloaded-images";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [images, setImages] = useState<string[]>([]);
-  const [downloadedImages, setDownloadedImages] = useState<Set<string>>(new Set());
+  const [downloadedImages, setDownloadedImages] = useState<Set<string>>(
+    new Set()
+  );
   const [isDownloading, setIsDownloading] = useState(false);
-  const [downloadProgress, setDownloadProgress] = useState({ current: 0, total: 0 });
+  const [downloadProgress, setDownloadProgress] = useState({
+    current: 0,
+    total: 0,
+  });
 
   // 从 localStorage 加载已下载的图片记录
   useEffect(() => {
@@ -25,7 +30,7 @@ function App() {
         setDownloadedImages(new Set(parsed));
       }
     } catch (error) {
-      console.error('加载已下载图片记录失败:', error);
+      console.error("加载已下载图片记录失败:", error);
     }
   }, []);
 
@@ -34,9 +39,12 @@ function App() {
     const newDownloaded = new Set([...downloadedImages, ...urls]);
     setDownloadedImages(newDownloaded);
     try {
-      localStorage.setItem(DOWNLOADED_IMAGES_KEY, JSON.stringify([...newDownloaded]));
+      localStorage.setItem(
+        DOWNLOADED_IMAGES_KEY,
+        JSON.stringify([...newDownloaded])
+      );
     } catch (error) {
-      console.error('保存已下载图片记录失败:', error);
+      console.error("保存已下载图片记录失败:", error);
     }
   };
 
@@ -49,7 +57,7 @@ function App() {
         description: "已清除所有下载记录",
       });
     } catch (error) {
-      console.error('重置下载记录失败:', error);
+      console.error("重置下载记录失败:", error);
       toast.error("重置失败", {
         description: "清除下载记录时出错",
       });
@@ -88,7 +96,7 @@ function App() {
         description: `成功下载 ${urls.length} 张图片`,
       });
     } catch (error) {
-      console.error('下载失败:', error);
+      console.error("下载失败:", error);
       toast.error("下载失败", {
         description: error instanceof Error ? error.message : "未知错误",
       });
@@ -126,12 +134,9 @@ function App() {
         onResetDownloaded={resetDownloadedImages}
       ></Home>
       <Toaster />
-      <DownloadProgress
-        isOpen={isDownloading}
-        current={downloadProgress.current}
-        total={downloadProgress.total}
-        onClose={() => setIsDownloading(false)}
-      />
+      {isDownloading && (
+        <DownloadProgress text={`正在下载... ${downloadProgress.current}/${downloadProgress.total}`} />
+      )}
     </div>
   );
 }
